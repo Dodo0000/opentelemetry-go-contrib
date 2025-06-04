@@ -8,6 +8,7 @@ package semconv // import "go.opentelemetry.io/contrib/instrumentation/net/http/
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"slices"
@@ -243,6 +244,8 @@ const (
 
 func (o OldHTTPClient) createMeasures(meter metric.Meter) (metric.Int64Counter, metric.Int64Counter, metric.Float64Histogram) {
 	if meter == nil {
+		// fixme: add debug log remove after debug
+		fmt.Println("[OldHTTPClient.createMeasures] meter is nil")
 		return noop.Int64Counter{}, noop.Int64Counter{}, noop.Float64Histogram{}
 	}
 	requestBytesCounter, err := meter.Int64Counter(
@@ -250,6 +253,10 @@ func (o OldHTTPClient) createMeasures(meter metric.Meter) (metric.Int64Counter, 
 		metric.WithUnit("By"),
 		metric.WithDescription("Measures the size of HTTP request messages."),
 	)
+	if err != nil {
+		// fixme: add debug log remove after debug
+		fmt.Println(fmt.Sprintf("[OldHTTPClient.createMeasures] requestBytesCounter failed, err:%+v", err))
+	}
 	handleErr(err)
 
 	responseBytesCounter, err := meter.Int64Counter(
@@ -257,6 +264,10 @@ func (o OldHTTPClient) createMeasures(meter metric.Meter) (metric.Int64Counter, 
 		metric.WithUnit("By"),
 		metric.WithDescription("Measures the size of HTTP response messages."),
 	)
+	if err != nil {
+		// fixme: add debug log remove after debug
+		fmt.Println(fmt.Sprintf("[OldHTTPClient.createMeasures] responseBytesCounter failed, err:%+v", err))
+	}
 	handleErr(err)
 
 	latencyMeasure, err := meter.Float64Histogram(
@@ -264,6 +275,10 @@ func (o OldHTTPClient) createMeasures(meter metric.Meter) (metric.Int64Counter, 
 		metric.WithUnit("ms"),
 		metric.WithDescription("Measures the duration of outbound HTTP requests."),
 	)
+	if err != nil {
+		// fixme: add debug log remove after debug
+		fmt.Println(fmt.Sprintf("[OldHTTPClient.createMeasures] responseBytesCounter failed, err:%+v", err))
+	}
 	handleErr(err)
 
 	return requestBytesCounter, responseBytesCounter, latencyMeasure

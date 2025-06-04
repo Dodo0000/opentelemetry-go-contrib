@@ -276,12 +276,18 @@ func (c HTTPClient) MetricOptions(ma MetricAttributes) map[string]MetricOpts {
 
 func (s HTTPClient) RecordMetrics(ctx context.Context, md MetricData, opts map[string]MetricOpts) {
 	if s.requestBytesCounter == nil || s.latencyMeasure == nil {
+		// fixme: add debug log remove after debug
+		fmt.Println("[HTTPClient.RecordMetrics] meter objs are nil")
 		// This will happen if an HTTPClient{} is used instead of NewHTTPClient().
 		return
 	}
 
 	s.requestBytesCounter.Add(ctx, md.RequestSize, opts["old"].AddOptions())
+	// fixme: add debug log remove after debug
+	fmt.Println(fmt.Sprintf("[HTTPClient.RecordMetrics] requestBytesCounter emit, value:%+v, opts:%+v", md.RequestSize, opts["old"].AddOptions()))
 	s.latencyMeasure.Record(ctx, md.ElapsedTime, opts["old"].MeasurementOption())
+	// fixme: add debug log remove after debug
+	fmt.Println(fmt.Sprintf("[HTTPClient.RecordMetrics] latencyMeasure emit, value:%+v, opts:%+v", md.RequestSize, opts["old"].AddOptions()))
 
 	if s.duplicate {
 		s.requestBodySize.Record(ctx, md.RequestSize, opts["new"].MeasurementOption())
@@ -291,6 +297,8 @@ func (s HTTPClient) RecordMetrics(ctx context.Context, md MetricData, opts map[s
 
 func (s HTTPClient) RecordResponseSize(ctx context.Context, responseData int64, opts map[string]MetricOpts) {
 	if s.responseBytesCounter == nil {
+		// fixme: add debug log remove after debug
+		fmt.Println("[HTTPClient.RecordResponseSize] meter objs are nil")
 		// This will happen if an HTTPClient{} is used instead of NewHTTPClient().
 		return
 	}
