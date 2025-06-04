@@ -193,6 +193,8 @@ type HTTPClient struct {
 func NewHTTPClient(meter metric.Meter) HTTPClient {
 	env := strings.ToLower(os.Getenv(OTelSemConvStabilityOptIn))
 	duplicate := env == "http/dup"
+	// fixme: add debug log remove after debug
+	fmt.Println(fmt.Sprintf("[NewHTTPClient] duplicate:%+v", duplicate))
 	client := HTTPClient{
 		duplicate: duplicate,
 	}
