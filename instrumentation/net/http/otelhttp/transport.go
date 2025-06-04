@@ -5,9 +5,12 @@ package otelhttp // import "go.opentelemetry.io/contrib/instrumentation/net/http
 
 import (
 	"context"
+	"fmt"
+	"github.com/labstack/gommon/log"
 	"io"
 	"net/http"
 	"net/http/httptrace"
+	"reflect"
 	"sync/atomic"
 	"time"
 
@@ -46,7 +49,11 @@ var _ http.RoundTripper = &Transport{}
 // If the provided http.RoundTripper is nil, http.DefaultTransport will be used
 // as the base http.RoundTripper.
 func NewTransport(base http.RoundTripper, opts ...Option) *Transport {
+	// fixme:
+	fmt.Println(fmt.Sprintf("NewTransport base_type:%+v", reflect.TypeOf(base)))
 	if base == nil {
+		// fixme:
+		fmt.Println(fmt.Sprintf("NewTransport base is nil base_type:%+v", reflect.TypeOf(base)))
 		base = http.DefaultTransport
 	}
 

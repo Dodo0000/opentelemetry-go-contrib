@@ -5,8 +5,10 @@ package otelhttp // import "go.opentelemetry.io/contrib/instrumentation/net/http
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptrace"
+	"reflect"
 
 	"go.opentelemetry.io/otel/attribute"
 
@@ -65,11 +67,14 @@ func newConfig(opts ...Option) *config {
 	if c.TracerProvider != nil {
 		c.Tracer = newTracer(c.TracerProvider)
 	}
-
+	// fixme: remove after debug
+	fmt.Println(fmt.Sprintf("newConfig meter_provider_type:%+v", reflect.TypeOf(c.MeterProvider)))
 	c.Meter = c.MeterProvider.Meter(
 		ScopeName,
 		metric.WithInstrumentationVersion(Version()),
 	)
+	// fixme: remove after debug
+	fmt.Println(fmt.Sprintf("newConfig, meter:%+v, meter_type:%+v", c.Meter, reflect.TypeOf(c.Meter)))
 
 	return c
 }
