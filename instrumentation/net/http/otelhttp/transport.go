@@ -6,7 +6,6 @@ package otelhttp // import "go.opentelemetry.io/contrib/instrumentation/net/http
 import (
 	"context"
 	"fmt"
-	"github.com/labstack/gommon/log"
 	"io"
 	"net/http"
 	"net/http/httptrace"
